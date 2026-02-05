@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+:root {
+  --bg-dark: #0f1117;
+  --card-dark: #151a23;
+  --border-dark: #1f2937;
+  --text-primary: #e5e7eb;
+  --text-muted: #9ca3af;
+  --accent: #7c3aed;
+  --danger: #ef4444;
+  --success: #22c55e;
+}
+
+/* Global dark theme */
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+}
+
+/* Light theme variables when `.light` class is present on <html> */
+.light {
+  --bg-dark: #f8fafc;
+  --card-dark: #ffffff;
+  --border-dark: #e5e7eb;
+  --text-primary: #0f172a;
+  --text-muted: #475569;
+  --accent: #7c3aed;
+  --danger: #dc2626;
+  --success: #16a34a;
+}
