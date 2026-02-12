@@ -1,6 +1,7 @@
 import { ApiError } from "../utils/ApiError.js";
 import {Expense} from '../models/expense.model.js'
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { predictExpenseCategory } from "../utils/aiService.js";
 const addExpense = async (req, res, next) => {
   try {
     const { description, amount, category, recurring, recurrence, startDate } = req.body;
@@ -59,6 +60,7 @@ const deleteExpense = async (req, res, next) => {
     next(error);
   }
 };
+
 const getSummary = async (req, res, next) => {
   try {
     const expenses = await Expense.find({ owner: req.user._id });
@@ -74,10 +76,30 @@ const getSummary = async (req, res, next) => {
   }
 };
 
+const predictCategory = async (req, res, next) => {
+  try {
+    const { description } = req.body;
+
+    if (!description || !description.trim()) {
+      throw new ApiError(400, "Description is required");
+    }
+
+    // Call AI service to predict category
+    const predictedCategory = await predictExpenseCategory(description);
+
+    res.status(200).json(
+      new ApiResponse(200, { category: predictedCategory }, "Category predicted successfully")
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
 
 export {
     addExpense,
     getExpense,
     deleteExpense,
     getSummary,
+    predictCategory,
 };

@@ -12,11 +12,40 @@ const AddExpense = () => {
     recurring: false,
   });
 
+  const [isLoadingPrediction, setIsLoadingPrediction] = useState(false);
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
     setFormData({ ...formData, [e.target.name]: value });
+  };
+
+  const handlePredictCategory = async () => {
+    if (!formData.description.trim()) {
+      toast.error("Please enter a description first");
+      return;
+    }
+
+    setIsLoadingPrediction(true);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/api/v1/expense/predict-category",
+        { description: formData.description },
+        { withCredentials: true }
+      );
+
+      const predictedCategory = response.data.data.category;
+      setFormData({ ...formData, category: predictedCategory });
+      toast.success(`Predicted category: ${predictedCategory}`);
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Failed to predict category"
+      );
+    } finally {
+      setIsLoadingPrediction(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -66,20 +95,32 @@ const AddExpense = () => {
             type="text"
             name="description"
             placeholder="Description"
+            value={formData.description}
             onChange={handleChange}
             className="w-full bg-[var(--bg-dark)] border border-[var(--border-dark)] px-4 py-2 rounded text-[var(--text-primary)] placeholder-[var(--text-muted)]"
           />
+
+          <button
+            type="button"
+            onClick={handlePredictCategory}
+            disabled={isLoadingPrediction || !formData.description.trim()}
+            className="w-full bg-blue-600 py-2 rounded font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isLoadingPrediction ? "Predicting..." : "🤖 AI Predict Category"}
+          </button>
 
           <input
             type="number"
             name="amount"
             placeholder="Amount"
+            value={formData.amount}
             onChange={handleChange}
             className="w-full bg-[var(--bg-dark)] border border-[var(--border-dark)] px-4 py-2 rounded text-[var(--text-primary)] placeholder-[var(--text-muted)]"
           />
 
           <select
             name="category"
+            value={formData.category}
             onChange={handleChange}
             className="w-full bg-[var(--bg-dark)] border border-[var(--border-dark)] px-4 py-2 rounded text-[var(--text-primary)]"
           >
