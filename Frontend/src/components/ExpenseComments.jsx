@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useContext, useCallback } from "react";
 import axios from "axios";
 import { SocketContext } from "../context/SocketContext";
 import { AuthContext } from "../context/AuthContext";
+import { API_BASE_URL } from "../config/env";
 
 /**
  * ExpenseComments
@@ -29,7 +30,7 @@ const ExpenseComments = ({ expenseId, onClose }) => {
     const fetchComments = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:4000/api/v1/comments/${expenseId}`,
+          `${API_BASE_URL}/api/v1/comments/${expenseId}`,
           { withCredentials: true }
         );
         setComments(res.data.data || []);

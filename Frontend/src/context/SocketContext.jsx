@@ -1,8 +1,11 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import { AuthContext } from "./AuthContext";
+import { SOCKET_URL } from "../config/env";
 
 export const SocketContext = createContext(null);
+
+const SOCKET_ENABLED = import.meta.env.VITE_ENABLE_SOCKET !== "false";
 
 export const SocketProvider = ({ children }) => {
   const { accessToken } = useContext(AuthContext);
@@ -12,6 +15,12 @@ export const SocketProvider = ({ children }) => {
   const socketRef = useRef(null);
 
   useEffect(() => {
+    if (!SOCKET_ENABLED) {
+      setConnected(false);
+      setSocket(null);
+      return;
+    }
+
     if (!accessToken) {
       if (socketRef.current) {
         socketRef.current.disconnect();
@@ -23,7 +32,7 @@ export const SocketProvider = ({ children }) => {
     }
 
     // Create socket with auth token
-    const sock = io("http://localhost:4000", {
+    const sock = io(SOCKET_URL, {
       auth: { token: accessToken },
       withCredentials: true,
       reconnection: true,

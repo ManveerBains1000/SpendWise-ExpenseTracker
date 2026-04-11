@@ -2,6 +2,7 @@ import { useEffect, useState, useContext, useCallback } from "react";
 import axios from "axios";
 import { SocketContext } from "../context/SocketContext";
 import { toast } from "react-toastify";
+import { API_BASE_URL } from "../config/env";
 
 /**
  * BudgetDashboard
@@ -26,7 +27,7 @@ const BudgetDashboard = () => {
   const fetchBudgets = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:4000/api/v1/budgets", {
+      const res = await axios.get(`${API_BASE_URL}/api/v1/budgets`, {
         withCredentials: true,
       });
       setBudgets(res.data.data || []);
@@ -71,7 +72,7 @@ const BudgetDashboard = () => {
     try {
       setSubmitting(true);
       const res = await axios.post(
-        "http://localhost:4000/api/v1/budgets",
+        `${API_BASE_URL}/api/v1/budgets`,
         { ...form, totalAmount: parseFloat(form.totalAmount) },
         { withCredentials: true }
       );
@@ -95,7 +96,7 @@ const BudgetDashboard = () => {
     }
     try {
       await axios.post(
-        `http://localhost:4000/api/v1/budgets/${budgetId}/charge`,
+        `${API_BASE_URL}/api/v1/budgets/${budgetId}/charge`,
         { amount },
         { withCredentials: true }
       );

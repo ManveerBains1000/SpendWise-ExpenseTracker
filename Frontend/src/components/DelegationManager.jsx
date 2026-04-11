@@ -2,6 +2,7 @@ import { useEffect, useState, useContext, useCallback } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-toastify";
+import { API_BASE_URL } from "../config/env";
 
 /**
  * DelegationManager
@@ -26,10 +27,10 @@ const DelegationManager = () => {
     try {
       setLoading(true);
       const [delegatesRes, principalsRes] = await Promise.all([
-        axios.get("http://localhost:4000/api/v1/delegations/my-delegates", {
+        axios.get(`${API_BASE_URL}/api/v1/delegations/my-delegates`, {
           withCredentials: true,
         }),
-        axios.get("http://localhost:4000/api/v1/delegations/delegating-for", {
+        axios.get(`${API_BASE_URL}/api/v1/delegations/delegating-for`, {
           withCredentials: true,
         }),
       ]);
@@ -53,7 +54,7 @@ const DelegationManager = () => {
     try {
       setGranting(true);
       await axios.post(
-        "http://localhost:4000/api/v1/delegations",
+        `${API_BASE_URL}/api/v1/delegations`,
         { delegateUsername: grantUsername.trim(), expiresAt: grantExpiry || undefined },
         { withCredentials: true }
       );
@@ -72,7 +73,7 @@ const DelegationManager = () => {
   const handleRevoke = async (delegationId) => {
     try {
       await axios.delete(
-        `http://localhost:4000/api/v1/delegations/${delegationId}`,
+        `${API_BASE_URL}/api/v1/delegations/${delegationId}`,
         { withCredentials: true }
       );
       toast.success("Delegation revoked");
@@ -92,7 +93,7 @@ const DelegationManager = () => {
     }
     try {
       await axios.post(
-        "http://localhost:4000/api/v1/delegations/switch-context",
+        `${API_BASE_URL}/api/v1/delegations/switch-context`,
         { principalId: principal._id },
         { withCredentials: true }
       );

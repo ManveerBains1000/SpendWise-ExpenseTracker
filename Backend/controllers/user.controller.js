@@ -80,10 +80,12 @@ const loginUser = async (req,res,next) => {
 
         const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
 
+        const isProduction = process.env.NODE_ENV === "production";
         const options = {
-            httpOnly:true,
-            secure:true,
-        }
+          httpOnly: true,
+          secure: isProduction,
+          sameSite: isProduction ? "none" : "lax",
+        };
         return res
         .status(200)
         .cookie("accessToken",accessToken,options)

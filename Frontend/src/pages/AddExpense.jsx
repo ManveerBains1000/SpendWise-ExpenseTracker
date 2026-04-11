@@ -4,6 +4,7 @@ import axios from "axios";
 import Navbar from "../components/NavBar";
 import { toast } from "react-toastify";
 import { AuthContext } from "../context/AuthContext";
+import { API_BASE_URL } from "../config/env";
 
 const AddExpense = () => {
   const { delegateContext } = useContext(AuthContext);
@@ -30,7 +31,7 @@ const AddExpense = () => {
     setIsLoadingPrediction(true);
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/v1/expense/predict-category",
+        `${API_BASE_URL}/api/v1/expense/predict-category`,
         { description: formData.description },
         { withCredentials: true }
       );
@@ -60,7 +61,7 @@ const AddExpense = () => {
       const headers = delegateContext?.principalId
         ? { "X-Delegate-For": delegateContext.principalId }
         : {};
-      await axios.post("http://localhost:4000/api/v1/expense", formData, {
+      await axios.post(`${API_BASE_URL}/api/v1/expense`, formData, {
         withCredentials: true,
         headers,
       });

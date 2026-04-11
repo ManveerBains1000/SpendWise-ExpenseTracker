@@ -2,6 +2,7 @@ import { createContext, useState, useContext } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { AuthContext } from "./AuthContext";
+import { API_BASE_URL } from "../config/env";
 
 export const ExpenseContext = createContext();
 
@@ -20,7 +21,7 @@ export const ExpenseProvider = ({ children }) => {
     try {
       setLoading(true);
       const res = await axios.get(
-        "http://localhost:4000/api/v1/expense",
+        `${API_BASE_URL}/api/v1/expense`,
         { withCredentials: true, headers: delegateHeaders() }
       );
       setExpenses(res.data.data);
@@ -34,7 +35,7 @@ export const ExpenseProvider = ({ children }) => {
   const deleteExpense = async (id) => {
     try {
       await axios.delete(
-        `http://localhost:4000/api/v1/expense/${id}`,
+        `${API_BASE_URL}/api/v1/expense/${id}`,
         { withCredentials: true, headers: delegateHeaders() }
       );
       setExpenses(expenses.filter(exp => exp._id !== id));
