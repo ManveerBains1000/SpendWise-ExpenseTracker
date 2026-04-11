@@ -10,11 +10,16 @@ const addExpense = async (req, res, next) => {
       throw new ApiError(400, "Description and amount are required");
     }
 
+    // If acting as a delegate, expense is owned by the principal
+    const ownerId = req.delegatingFor || req.user._id;
+    const submittedById = req.delegatingFor ? req.user._id : null;
+
     const newExpense = await Expense.create({
       description,
       amount,
       category,
-      owner: req.user._id,
+      owner: ownerId,
+      submitted_by: submittedById,
       recurring: recurring || false,
       recurrence: recurrence || 'monthly',
       startDate: startDate ? new Date(startDate) : undefined,
@@ -30,8 +35,12 @@ const addExpense = async (req, res, next) => {
 
 const getExpense = async (req,res,next) => {
     try{
+        // When a delegate is acting on behalf of a principal, show the principal's expenses
+        const ownerId = req.delegatingFor || req.user._id;
         const expenses = await Expense
-        .find({ owner: req.user._id })
+        .find({ owner: ownerId })
+        .populate("submitted_by", "username name")
+        .populate("budget", "name department")
         .sort({ date: -1 });
         res.status(200).json(
             new ApiResponse(200,expenses,"Expenses fetched successfully")
@@ -44,9 +53,10 @@ const getExpense = async (req,res,next) => {
 
 const deleteExpense = async (req, res, next) => {
   try {
+    const ownerId = req.delegatingFor || req.user._id;
     const expense = await Expense.findOneAndDelete({
       _id: req.params.id,
-      owner: req.user._id,
+      owner: ownerId,
     });
 
     if (!expense) {

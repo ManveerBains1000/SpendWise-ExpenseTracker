@@ -1,36 +1,36 @@
 import React, { useEffect, useState } from 'react';
 
 const ThemeToggle = () => {
-  const [isLight, setIsLight] = useState(false);
+  const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem('theme');
-    if (saved === 'light') {
-      document.documentElement.classList.add('light');
-      setIsLight(true);
+    if (saved === 'dark') {
+      document.documentElement.classList.add('dark');
+      setIsDark(true);
     }
   }, []);
 
   const toggle = () => {
-    if (isLight) {
-      document.documentElement.classList.remove('light');
-      localStorage.setItem('theme', 'dark');
-      setIsLight(false);
-    } else {
-      document.documentElement.classList.add('light');
+    if (isDark) {
+      document.documentElement.classList.remove('dark');
       localStorage.setItem('theme', 'light');
-      setIsLight(true);
+      setIsDark(false);
+    } else {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+      setIsDark(true);
     }
   };
 
   return (
     <button
       onClick={toggle}
-      className="px-2 py-1 rounded bg-transparent-600 border border-[var(--border-dark)] rounded-xl"
+      title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+      className="flex items-center justify-center w-8 h-8 rounded-full border border-[var(--border-dark)] hover:bg-[var(--bg-dark)] transition-colors"
       aria-label="Toggle theme"
     >
-
-      <img src="..\src\assets\brightness-and-contrast.png" alt="" width={20}/>
+      {isDark ? '☀️' : '🌙'}
     </button>
   );
 };

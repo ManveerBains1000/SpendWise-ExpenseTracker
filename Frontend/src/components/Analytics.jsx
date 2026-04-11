@@ -122,8 +122,8 @@ const Analytics = () => {
   }, [filteredExpenses]);
 
   return (
-    <div className="bg-[var(--card-dark)] p-6 rounded-lg mb-6 border border-[var(--border-dark)]">
-      <h2 className="text-xl font-semibold mb-4">Analytics</h2>
+    <div className="bg-[var(--card-dark)] p-6 rounded-2xl mb-5 border border-[var(--border-dark)] shadow-sm">
+      <h2 className="text-base font-semibold text-[var(--text-primary)] mb-4">Analytics</h2>
 
       <div className="flex gap-3 flex-wrap mb-4">
         <button

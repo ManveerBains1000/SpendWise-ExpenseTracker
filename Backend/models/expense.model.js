@@ -36,7 +36,19 @@ const ExpenseSchema = new Schema(
             type: mongoose.Schema.Types.ObjectId,
             required:true,
             ref:'User',
-        }
+        },
+        // Audit: who actually submitted (null = owner submitted themselves)
+        submitted_by: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            default: null,
+        },
+        // Optional: expense charged against a shared budget
+        budget: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Budget',
+            default: null,
+        },
     },
     {
         timestamps:true,
